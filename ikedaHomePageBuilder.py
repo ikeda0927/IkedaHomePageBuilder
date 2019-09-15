@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import ttk
 import re
 import datetime
 
@@ -16,7 +15,6 @@ window1=None
 window1Geometry=None
 entryList = list()
 stringList = list()
-test1 = 4
 
 class Entry:
     type=None
@@ -25,13 +23,10 @@ class Entry:
     def __init__(self,base, type):
         self.type = type
         if type=='p':
-            # print('p')
             self.entry=tk.Text(base,width=40, height=20)
         elif type=='code':
-            # print('code')
             self.entry=tk.Text(base,width=40, height=20)
         else:
-            # print('other')
             self.sv=tk.StringVar()
             self.sv.set('')
             self.entry=tk.Entry(base,textvariable=self.sv,width=31)
@@ -150,9 +145,6 @@ prettyPrint();
         window1.destroy()
     base.destroy()
 
-def buttonAction(entry):
-    entry.hide()
-
 def insertTitle(title):
     stringList.insert(0,'''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
@@ -206,9 +198,6 @@ def makeEntry(string):
     entryList.append(entry)
     entry.getEntry().pack(padx=5,pady=5)
     showLabel()
-    # entry.getEntry().grid(row=0, column=0, padx=2, pady=2)
-    # button = tk.Button(frame3,text='test',command=test)
-    # button.pack()
 
 def window1OnClosing():
     global window1
@@ -219,26 +208,33 @@ def window1OnClosing():
 def showLabel():
     global frame3
     global window1
-    # if frame3 != None:
-    #     frame3.pack_forget()
     if window1 != None:
         window1Geometry=window1.geometry()
         window1Geometry=re.sub('[0-9.]+x[0-9.]+','',window1.geometry())
         window1.destroy()
     else:
         window1Geometry='+100+100'
-    # frame3=tk.Frame(canvas)
     window1=tk.Tk()
     window1.title('View')
     window1.protocol("WM_DELETE_WINDOW", window1OnClosing)
-    window1.geometry(window1Geometry)
+    window1.geometry(window1Geometry)#'200x200'+
+    window1Frame=tk.Frame(window1,bg='#FF0000')
+    # window1Scrollbar=tk.Scrollbar(window1, orient=tk.VERTICAL,bg='#FF0000')
+    window1Canvas= tk.Canvas(window1,bg='#FFFF00')#,width=170,height=200
+    window1Canvas.create_window((0,0), anchor=tk.NW, width=window1Canvas.cget('width'), height=window1Canvas.cget('height'))
+    window1Frame.pack(anchor=tk.N,side='left')
+    # window1Canvas.config(scrollregion=window1Canvas.bbox('all'))
+    # window1Canvas.config(yscrollcommand=window1Scrollbar.set)
+    # window1Scrollbar.config(command=window1Canvas.yview)
+    # window1Scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    window1Canvas.pack()
+    # labelHeight=0
     for string in stringList:
-        tk.Label(window1,text=string).pack()
-    # frame3.pack()
+        label= tk.Label(window1Canvas,text=string).pack()#,width=20,height=1 padx=1,pady=1
+        # labelHeight=labelHeight+2
+    # window1Frame.update()
+    # window1Canvas.config(scrollregion=(0,0,0,labelHeight))
 
-def test():
-    print('test')
-    # frame1.pack(anchor=tk.N,side='left',height=100)
 
 def funcManager(string1,string2,string3 ):
     insertTitle(string1)
@@ -247,42 +243,27 @@ def funcManager(string1,string2,string3 ):
 
 if __name__ == '__main__':
     canvas.pack(side='left',expand = True, fill = tk.BOTH)
-    # canvas.grid(row=0, column=0, padx=2, pady=2)
-    # frame.pack()
     print('width:'+str(canvas.cget('width'))+' height:'+str(canvas.cget('height')))
     canvas.create_window((0,0), window=frame, anchor=tk.NW, width=canvas.cget('width'), height=canvas.cget('height'))
-    # frame1.pack(anchor=tk.N,side='left',expand = True, fill = tk.BOTH)
-    # frame2.pack(anchor=tk.N,side='left',expand = True, fill = tk.BOTH)
     frame1.pack(anchor=tk.N,side='left')
     frame2.pack(anchor=tk.N,side='left')
     frame3.pack(anchor=tk.N,side='left')
-    # frame1.grid(row=0, column=0, padx=2, pady=2)
-    # frame2.grid(row=0, column=1, padx=2, pady=2)
     scrollbar = tk.Scrollbar(base, orient=tk.VERTICAL)
-    # scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     scrollbar.config(command=canvas.yview)
     canvas.config(scrollregion=canvas.bbox('all'))
     canvas.config(yscrollcommand=scrollbar.set)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-    # scrollbar.grid(row=0, column=2, padx=2, pady=2)
     sv=tk.StringVar()
     sv.set('File name')
     fnameEntry=tk.Entry(frame1,textvariable=sv).pack()
-    # fnameEntry=tk.Entry(frame1,textvariable=sv).grid(row=0, column=0, padx=2, pady=2)
     sv1=tk.StringVar()
     sv1.set('Title')
     fnameEntry=tk.Entry(frame1,textvariable=sv1).pack()
-    # fnameEntry=tk.Entry(frame1,textvariable=sv1).grid(row=1, column=0, padx=2, pady=2)
     sv2=tk.StringVar()
     sv2.set('Sub title')
     fnameEntry=tk.Entry(frame1,textvariable=sv2).pack()
-    # fnameEntry=tk.Entry(frame1,textvariable=sv2).grid(row=2, column=0, padx=2, pady=2)
     sv3 = tk.StringVar()
     sv3.set('')
     option= tk.OptionMenu(frame1,sv3, 'h1', 'h2','h3','h4','h5','p','code',command=makeEntry).pack()
-    # option= tk.OptionMenu(frame1,sv3, 'h1', 'h2','h3','h4','h5','p','code',command=makeEntry).grid(row=3, column=0, padx=2, pady=2)
-    # button = tk.Button(base,text='Run',command= lambda: makeFile(textBox.get('1.0', 'end -1c'))).pack()
-    # button = tk.Button(frame,text='Run',command= lambda: makeFile(sv.get())).pack()
     button = tk.Button(frame1,text='Run',command= lambda: funcManager(sv1.get(),sv2.get(),sv.get())).pack()
-    # button = tk.Button(frame1,text='Run',command= lambda: funcManager(sv1.get(),sv2.get(),sv.get())).grid(row=4, column=0, padx=2, pady=2)
     base.mainloop()
