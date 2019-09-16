@@ -6,11 +6,12 @@ base=tk.Tk()
 base.title('Ikeda HomePage Builder(beta)')
 base.geometry("700x400")
 base.configure(bg='skyblue')
-canvas=tk.Canvas(base,bg='#FFFFFF',width=700,height=400)
+canvas=tk.Canvas(base,bg='#FFFFFF',width=700,height=400)#for scrollbar
 frame=tk.Frame(canvas,bg='#A0A0A0')
 frame1=tk.Frame(frame,bg='#FFFFFF')
 frame2=tk.Frame(frame,bg='#A0A0A0')
-frame3=tk.Frame(frame,bg='#FFFFFF')
+frame3=tk.Frame(frame1,bg='#FFFFFF')
+frame4=tk.Frame(frame,bg='#FFFFFF')
 entryList = list()
 stringList = list()
 headingDict= {}
@@ -236,16 +237,16 @@ def makeEntry(string):
     showLabel()
 
 def showLabel():
-    global frame3
+    global frame4
     global window1
     global stringList
     global window1Geometry
-    frame4=frame3
-    frame4.destroy()
-    frame3=tk.Frame(frame)
-    frame3.pack(anchor=tk.N,side='left')
+    frame5=frame4
+    frame5.destroy()
+    frame4=tk.Frame(frame)
+    frame4.pack(anchor=tk.N,side='left')
     listsv=tk.StringVar(value=stringList)
-    listbox=tk.Listbox(frame3,listvariable = listsv,selectmode = 'extended',height = len(stringList)).pack()
+    listbox=tk.Listbox(frame4,listvariable = listsv,selectmode = 'extended',height = len(stringList)).pack()
 
 def addTag(tag):
     if len(entryList) != 0:
@@ -273,7 +274,7 @@ if __name__ == '__main__':
     canvas.create_window((0,0), window=frame, anchor=tk.NW, width=canvas.cget('width'), height=canvas.cget('height'))
     frame1.pack(anchor=tk.N,side='left')
     frame2.pack(anchor=tk.N,side='left')
-    frame3.pack(anchor=tk.N,side='left')
+    frame4.pack(anchor=tk.N,side='left')
     sv=tk.StringVar()
     sv.set('File name')
     fnameEntry=tk.Entry(frame1,textvariable=sv).pack()
@@ -290,7 +291,8 @@ if __name__ == '__main__':
     sv4.set('')
     option= tk.OptionMenu(frame1,sv4, 'h1', 'h2','h3','h4','h5','p','code',command=makeEntry).pack()
     button = tk.Button(frame1,text='Run',command= lambda: funcManager(sv1.get(),sv2.get(),sv3.get(),sv.get())).pack()
-    button = tk.Button(frame1,text='a',command= lambda: addTag('a')).pack()
-    button = tk.Button(frame1,text='img',command= lambda: addTag('img')).pack()
-    button = tk.Button(frame1,text='list',command= lambda: addTag('list')).pack()
+    frame3.pack()
+    button = tk.Button(frame3,text='a',command= lambda: addTag('a')).pack(anchor=tk.N,side='left')
+    button = tk.Button(frame3,text='img',command= lambda: addTag('img')).pack(anchor=tk.N,side='left')
+    button = tk.Button(frame3,text='list',command= lambda: addTag('list')).pack(anchor=tk.N,side='left')
     base.mainloop()
