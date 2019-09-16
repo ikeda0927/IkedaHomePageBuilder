@@ -15,7 +15,7 @@ window1=None
 window1Geometry=None
 entryList = list()
 stringList = list()
-headingList= list()
+headingDict= {}
 
 class Entry:
     type=None
@@ -54,7 +54,8 @@ class Entry:
                 string=None
         elif self.type[0]=='h':
             if self.sv0.get()!='':
-                string='<h'+self.type[1]+' id="#'+self.sv0.get()+'">'
+                headingDict[self.sv0.get()]=self.sv.get()
+                string='<h'+self.type[1]+' id="'+self.sv0.get()+'">'
             else:
                 string='<h'+self.type[1]+'>'
             if self.sv.get()!='':
@@ -186,12 +187,12 @@ def insertTitle(title):
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="css/common.css" type="text/css" />'''+'<title>'+title+'</title>\n')
 
-def insertSubTitle(subtitle):
+def insertSubTitle(subtitle1,subtitle2):
     stringList.insert(1,'''</head>
     <body>
     <div id="top">
        <div id="header">
-         <h1><a href="index.html">IkeLog</a>_<a href="">'''+subtitle+'''</a>()</h1>
+         <h1><a href="index.html">IkeLog</a>_<a href="">'''+subtitle1+'''</a>()</h1>
   </div><!-- /#header -->
   <div id="menu">
      <ul>
@@ -207,17 +208,20 @@ def insertSubTitle(subtitle):
   </div><!-- /#menu -->
   <div id="contents">
     <div id="subtitle">
-    <h3>_</h3>
+    <h3>'''+subtitle2+'''</h3>
     </div>
     <div>
       <ol>
-        <li><a href="#heading1">_</a></li>
-        <li><a href="#heading2">_</a></li>
-        <li><a href="#heading3">_</a></li>
-        <li><a href="#heading4">_</a></li>
+        '''+agenda()+'''
       </ol>
     </div>
      <div id="main">''')
+
+def agenda():
+    string=''
+    for heading in headingDict.keys():
+        string=string+'        <li><a href="#'+heading+'">'+headingDict[heading]+'</a></li>\n'
+    return string
 
 def makeEntry(string):
     entry=Entry(frame2,string)
@@ -285,10 +289,10 @@ def addTag(tag):
         else:
             None
 
-def funcManager(string1,string2,string3 ):
+def funcManager(string1,string2,string3,string4 ):
     insertTitle(string1)
-    insertSubTitle(string2)
-    makeFile(string3)
+    insertSubTitle(string2,string3)
+    makeFile(string4)
 
 if __name__ == '__main__':
     canvas.pack(side='left',expand = True, fill = tk.BOTH)
@@ -311,10 +315,13 @@ if __name__ == '__main__':
     sv2=tk.StringVar()
     sv2.set('Sub title')
     fnameEntry=tk.Entry(frame1,textvariable=sv2).pack()
-    sv3 = tk.StringVar()
-    sv3.set('')
-    option= tk.OptionMenu(frame1,sv3, 'h1', 'h2','h3','h4','h5','p','code',command=makeEntry).pack()
-    button = tk.Button(frame1,text='Run',command= lambda: funcManager(sv1.get(),sv2.get(),sv.get())).pack()
+    sv3=tk.StringVar()
+    sv3.set('Sub title2')
+    fnameEntry=tk.Entry(frame1,textvariable=sv3).pack()
+    sv4 = tk.StringVar()
+    sv4.set('')
+    option= tk.OptionMenu(frame1,sv4, 'h1', 'h2','h3','h4','h5','p','code',command=makeEntry).pack()
+    button = tk.Button(frame1,text='Run',command= lambda: funcManager(sv1.get(),sv2.get(),sv3.get(),sv.get())).pack()
     button = tk.Button(frame1,text='a',command= lambda: addTag('a')).pack()
     button = tk.Button(frame1,text='img',command= lambda: addTag('img')).pack()
     button = tk.Button(frame1,text='list',command= lambda: addTag('list')).pack()
