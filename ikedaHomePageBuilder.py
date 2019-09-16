@@ -244,7 +244,7 @@ def showLabel():
     frame5=frame4
     frame5.destroy()
     frame4=tk.Frame(frame)
-    frame4.pack(anchor=tk.N,side='left')
+    frame4.pack(anchor=tk.N,side='left',padx=5,pady=5)
     listsv=tk.StringVar(value=stringList)
     listbox=tk.Listbox(frame4,listvariable = listsv,selectmode = 'extended',height = len(stringList)).pack()
 
@@ -252,11 +252,11 @@ def addTag(tag):
     if len(entryList) != 0:
         entry= entryList[-1]
         if tag == 'a':
-            entry.getEntry().insert(tk.END,'<a href="" target="_blank"></a>')
+            entry.getEntry().insert(tk.INSERT,'<a href="" target="_blank"></a>')
         elif tag == 'img':
-            entry.getEntry().insert(tk.END,'<a href="" target="_blank"><img src="d"/></a>')
+            entry.getEntry().insert(tk.INSERT,'<a href="" target="_blank"><img src="d"/></a>')
         elif tag == 'list':
-            entry.getEntry().insert(tk.END,'''<ol>
+            entry.getEntry().insert(tk.INSERT,'''<ol>
      <li></li>
      <li></li>
      <li></li>
@@ -272,7 +272,7 @@ def funcManager(string1,string2,string3,string4 ):
 if __name__ == '__main__':
     canvas.pack(side='left',expand = True, fill = tk.BOTH)
     canvas.create_window((0,0), window=frame, anchor=tk.NW, width=canvas.cget('width'), height=canvas.cget('height'))
-    frame1.pack(anchor=tk.N,side='left')
+    frame1.pack(anchor=tk.N,side='left',padx=5,pady=5)
     frame2.pack(anchor=tk.N,side='left')
     frame4.pack(anchor=tk.N,side='left')
     sv=tk.StringVar()
