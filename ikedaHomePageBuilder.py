@@ -11,15 +11,11 @@ frame=tk.Frame(canvas,bg='#A0A0A0')
 frame1=tk.Frame(frame,bg='#FFFFFF')
 frame2=tk.Frame(frame,bg='#A0A0A0')
 frame3=tk.Frame(frame,bg='#FFFFFF')
-window1=None
-window1Geometry=None
 entryList = list()
 stringList = list()
 headingDict= {}
-listBoxContents = list()
 listsv = None
 listbox=None
-window1Geometry='+100+100'
 
 class Entry:
     type=None
@@ -175,8 +171,6 @@ prettyPrint();
 </script>
 </body>
 </html>''')
-    if window1 != None:
-        window1.destroy()
     base.destroy()
 
 def insertTitle(title):
@@ -276,7 +270,6 @@ def funcManager(string1,string2,string3,string4 ):
 
 if __name__ == '__main__':
     canvas.pack(side='left',expand = True, fill = tk.BOTH)
-    # print('width:'+str(canvas.cget('width'))+' height:'+str(canvas.cget('height')))
     canvas.create_window((0,0), window=frame, anchor=tk.NW, width=canvas.cget('width'), height=canvas.cget('height'))
     frame1.pack(anchor=tk.N,side='left')
     frame2.pack(anchor=tk.N,side='left')
