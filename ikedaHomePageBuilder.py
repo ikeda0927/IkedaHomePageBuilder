@@ -26,6 +26,7 @@ class Entry:
     sv=None
     label1=None
     label2=None
+    selectedListIndex=None
     def __init__(self,base, type):
         self.type = type
         if type=='p':
@@ -87,6 +88,11 @@ class Entry:
             string=self.sv.get()
         return string
 
+    def setText(self):
+        global stringList
+        if self.selectedListIndex != None:
+            self.entry.insert(tk.END,stringList[self.selectedListIndex])
+
     def getEntry(self):
         return self.entry
 
@@ -99,14 +105,17 @@ class Entry:
     def getLabel2(self):
         return self.label2
 
+    def setSelectedListIndex(self,int):
+        self.selectedListIndex=int
+
     def hide(self):
-        # print("hide is called")
+        global stringList
         text=self.writeToFile()
         if(text != None):
-            stringList.append(text)
-        # for s in stringList:
-        #     print(s)
-        #     print('\n')
+            if self.selectedListIndex != None:
+                stringList[self.selectedListIndex]=text
+            else:
+                stringList.append(text)
         if self.label1 != None:
             self.label1.destroy()
         if self.label2 != None:
@@ -236,17 +245,36 @@ def makeEntry(string):
     entry.getEntry().pack(padx=5,pady=5)
     showLabel()
 
+def updateEntry(string,index):
+    entry=Entry(frame2,string)
+    entry.setSelectedListIndex(index)
+    entry.setText()
+    if len(entryList) !=0:
+        pre = entryList[-1]
+        pre.hide()
+    entryList.append(entry)
+    idEntry=entry.getIDEntry()
+    if idEntry != None:
+        entry.getLabel1().pack()
+        idEntry.pack(padx=5,pady=5)
+        entry.getLabel2().pack()
+    entry.getEntry().pack(padx=5,pady=5)
+    showLabel()
+
 def showLabel():
     global frame4
     global window1
     global stringList
     global window1Geometry
+    global listbox
     frame5=frame4
     frame5.destroy()
     frame4=tk.Frame(frame)
     frame4.pack(anchor=tk.N,side='left',padx=5,pady=5)
     listsv=tk.StringVar(value=stringList)
-    listbox=tk.Listbox(frame4,listvariable = listsv,selectmode = 'extended',height = len(stringList)).pack()
+    listbox=tk.Listbox(frame4,listvariable = listsv,selectmode = 'extended',height = len(stringList))
+    listbox.bind("<<ListboxSelect>>", listboxSelected)
+    listbox.pack()
 
 def addTag(tag):
     if len(entryList) != 0:
@@ -263,6 +291,28 @@ def addTag(tag):
 </ol>''')
         else:
             None
+
+def listboxSelected(arg):
+    global listbox
+    if listbox != None:
+        selectedListNum=listbox.curselection()
+        string=stringList[selectedListNum[0]][0:3]
+        if string=='<p>':
+            updateEntry('p',selectedListNum[0])
+        elif string=='<co':
+            updateEntry('code',selectedListNum[0])
+        elif string=='<h1':
+            updateEntry('h1',selectedListNum[0])
+        elif string=='<h2':
+            updateEntry('h2',selectedListNum[0])
+        elif string=='<h3':
+            updateEntry('h3',selectedListNum[0])
+        elif string=='<h4':
+            updateEntry('h4',selectedListNum[0])
+        elif string=='<h5':
+            updateEntry('h5',selectedListNum[0])
+        else:
+            print(string)
 
 def funcManager(string1,string2,string3,string4 ):
     insertTitle(string1)
