@@ -4,18 +4,22 @@ import datetime
 
 base=tk.Tk()
 base.title('Ikeda HomePage Builder(beta)')
-base.geometry("600x400")
+base.geometry("700x400")
 base.configure(bg='skyblue')
-canvas=tk.Canvas(base,bg='#FFFFFF',width=570,height=400)
+canvas=tk.Canvas(base,bg='#FFFFFF',width=700,height=400)
 frame=tk.Frame(canvas,bg='#A0A0A0')
 frame1=tk.Frame(frame,bg='#FFFFFF')
 frame2=tk.Frame(frame,bg='#A0A0A0')
-frame3=tk.Frame(canvas)
+frame3=tk.Frame(frame,bg='#FFFFFF')
 window1=None
 window1Geometry=None
 entryList = list()
 stringList = list()
 headingDict= {}
+listBoxContents = list()
+listsv = None
+listbox=None
+window1Geometry='+100+100'
 
 class Entry:
     type=None
@@ -99,13 +103,13 @@ class Entry:
         return self.label2
 
     def hide(self):
-        print("hide is called")
+        # print("hide is called")
         text=self.writeToFile()
         if(text != None):
             stringList.append(text)
-        for s in stringList:
-            print(s)
-            print('\n')
+        # for s in stringList:
+        #     print(s)
+        #     print('\n')
         if self.label1 != None:
             self.label1.destroy()
         if self.label2 != None:
@@ -237,41 +241,17 @@ def makeEntry(string):
     entry.getEntry().pack(padx=5,pady=5)
     showLabel()
 
-def window1OnClosing():
-    global window1
-    window2=window1
-    window1=None
-    window2.destroy()
-
 def showLabel():
     global frame3
     global window1
-    if window1 != None:
-        window1Geometry=window1.geometry()
-        window1Geometry=re.sub('[0-9.]+x[0-9.]+','',window1.geometry())
-        window1.destroy()
-    else:
-        window1Geometry='+100+100'
-    window1=tk.Tk()
-    window1.title('View')
-    window1.protocol("WM_DELETE_WINDOW", window1OnClosing)
-    window1.geometry(window1Geometry)#'200x200'+
-    window1Frame=tk.Frame(window1,bg='#FF0000')
-    # window1Scrollbar=tk.Scrollbar(window1, orient=tk.VERTICAL,bg='#FF0000')
-    window1Canvas= tk.Canvas(window1,bg='#FFFF00')#,width=170,height=200
-    window1Canvas.create_window((0,0), anchor=tk.NW, width=window1Canvas.cget('width'), height=window1Canvas.cget('height'))
-    window1Frame.pack(anchor=tk.N,side='left')
-    # window1Canvas.config(scrollregion=window1Canvas.bbox('all'))
-    # window1Canvas.config(yscrollcommand=window1Scrollbar.set)
-    # window1Scrollbar.config(command=window1Canvas.yview)
-    # window1Scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-    window1Canvas.pack()
-    # labelHeight=0
-    for string in stringList:
-        label= tk.Label(window1Canvas,text=string).pack()#,width=20,height=1 padx=1,pady=1
-        # labelHeight=labelHeight+2
-    # window1Frame.update()
-    # window1Canvas.config(scrollregion=(0,0,0,labelHeight))
+    global stringList
+    global window1Geometry
+    frame4=frame3
+    frame4.destroy()
+    frame3=tk.Frame(frame)
+    frame3.pack(anchor=tk.N,side='left')
+    listsv=tk.StringVar(value=stringList)
+    listbox=tk.Listbox(frame3,listvariable = listsv,selectmode = 'extended',height = len(stringList)).pack()
 
 def addTag(tag):
     if len(entryList) != 0:
@@ -296,16 +276,11 @@ def funcManager(string1,string2,string3,string4 ):
 
 if __name__ == '__main__':
     canvas.pack(side='left',expand = True, fill = tk.BOTH)
-    print('width:'+str(canvas.cget('width'))+' height:'+str(canvas.cget('height')))
+    # print('width:'+str(canvas.cget('width'))+' height:'+str(canvas.cget('height')))
     canvas.create_window((0,0), window=frame, anchor=tk.NW, width=canvas.cget('width'), height=canvas.cget('height'))
     frame1.pack(anchor=tk.N,side='left')
     frame2.pack(anchor=tk.N,side='left')
     frame3.pack(anchor=tk.N,side='left')
-    scrollbar = tk.Scrollbar(base, orient=tk.VERTICAL)
-    scrollbar.config(command=canvas.yview)
-    canvas.config(scrollregion=canvas.bbox('all'))
-    canvas.config(yscrollcommand=scrollbar.set)
-    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     sv=tk.StringVar()
     sv.set('File name')
     fnameEntry=tk.Entry(frame1,textvariable=sv).pack()
