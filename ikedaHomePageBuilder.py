@@ -15,11 +15,16 @@ window1=None
 window1Geometry=None
 entryList = list()
 stringList = list()
+headingList= list()
 
 class Entry:
     type=None
     entry=None
+    id=None
+    sv0=None
     sv=None
+    label1=None
+    label2=None
     def __init__(self,base, type):
         self.type = type
         if type=='p':
@@ -27,6 +32,11 @@ class Entry:
         elif type=='code':
             self.entry=tk.Text(base,width=40, height=20)
         else:
+            self.label1=tk.Label(base,text='ID')
+            self.label2=tk.Label(base,text='Text')
+            self.sv0=tk.StringVar()
+            self.sv0.set('')
+            self.id=tk.Entry(base,textvariable=self.sv0,width=31)
             self.sv=tk.StringVar()
             self.sv.set('')
             self.entry=tk.Entry(base,textvariable=self.sv,width=31)
@@ -42,29 +52,33 @@ class Entry:
                 string='<code><pre class="prettyprint linenums">'+self.entry.get('1.0', 'end -1c')+'</pre></code>\n'
             else:
                 string=None
-        elif self.type=='h1':
+        elif self.type[0]=='h':
+            if self.sv0.get()!='':
+                string='<h'+self.type[1]+' id="#'+self.sv0.get()+'">'
+            else:
+                string='<h'+self.type[1]+'>'
             if self.sv.get()!='':
-                string='<h1>'+self.sv.get()+'</h1>\n'
+                string=string+self.sv.get()+'</h'+self.type[1]+'>\n'
             else:
                 string=None
-        elif self.type=='h2':
-            if self.sv.get()!='':
-                string='<h2>'+self.sv.get()+'</h2>\n'
+        else:
+            string=self.sv.get()
+        return string
+
+    def getCurrentString(self):
+        if self.type=='p':
+            if self.entry.get('1.0', 'end -1c')!='':
+                string=self.entry.get('1.0', 'end -1c')
             else:
                 string=None
-        elif self.type=='h3':
-            if self.sv.get()!='':
-                string='<h3>'+self.sv.get()+'</h3>\n'
+        elif self.type=='code':
+            if self.entry.get('1.0', 'end -1c')!='':
+                string=self.entry.get('1.0', 'end -1c')
             else:
                 string=None
-        elif self.type=='h4':
+        elif self.type[0]=='h':
             if self.sv.get()!='':
-                string='<h4>'+self.sv.get()+'</h4>\n'
-            else:
-                string=None
-        elif self.type=='h5':
-            if self.sv.get()!='':
-                string='<h5>'+self.sv.get()+'</h5>\n'
+                string=string+self.sv.get()
             else:
                 string=None
         else:
@@ -74,6 +88,15 @@ class Entry:
     def getEntry(self):
         return self.entry
 
+    def getIDEntry(self):
+        return self.id
+
+    def getLabel1(self):
+        return self.label1
+
+    def getLabel2(self):
+        return self.label2
+
     def hide(self):
         print("hide is called")
         text=self.writeToFile()
@@ -82,6 +105,12 @@ class Entry:
         for s in stringList:
             print(s)
             print('\n')
+        if self.label1 != None:
+            self.label1.destroy()
+        if self.label2 != None:
+            self.label2.destroy()
+        if self.id != None:
+            self.id.destroy()
         self.entry.destroy()
 
 def makeFile(fname):
@@ -196,6 +225,11 @@ def makeEntry(string):
         pre = entryList[-1]
         pre.hide()
     entryList.append(entry)
+    idEntry=entry.getIDEntry()
+    if idEntry != None:
+        entry.getLabel1().pack()
+        idEntry.pack(padx=5,pady=5)
+        entry.getLabel2().pack()
     entry.getEntry().pack(padx=5,pady=5)
     showLabel()
 
@@ -235,6 +269,21 @@ def showLabel():
     # window1Frame.update()
     # window1Canvas.config(scrollregion=(0,0,0,labelHeight))
 
+def addTag(tag):
+    if len(entryList) != 0:
+        entry= entryList[-1]
+        if tag == 'a':
+            entry.getEntry().insert(tk.END,'<a href="" target="_blank"></a>')
+        elif tag == 'img':
+            entry.getEntry().insert(tk.END,'<a href="" target="_blank"><img src="d"/></a>')
+        elif tag == 'list':
+            entry.getEntry().insert(tk.END,'''<ol>
+     <li></li>
+     <li></li>
+     <li></li>
+</ol>''')
+        else:
+            None
 
 def funcManager(string1,string2,string3 ):
     insertTitle(string1)
@@ -266,4 +315,7 @@ if __name__ == '__main__':
     sv3.set('')
     option= tk.OptionMenu(frame1,sv3, 'h1', 'h2','h3','h4','h5','p','code',command=makeEntry).pack()
     button = tk.Button(frame1,text='Run',command= lambda: funcManager(sv1.get(),sv2.get(),sv.get())).pack()
+    button = tk.Button(frame1,text='a',command= lambda: addTag('a')).pack()
+    button = tk.Button(frame1,text='img',command= lambda: addTag('img')).pack()
+    button = tk.Button(frame1,text='list',command= lambda: addTag('list')).pack()
     base.mainloop()
